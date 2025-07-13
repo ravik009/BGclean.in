@@ -1271,12 +1271,16 @@
     const showToolbarBtn = document.getElementById('show-erase-toolbar');
     const toolbarPanel = document.getElementById('erase-toolbar-panel');
     const closeBtn = document.getElementById('toolbar-close-btn');
-    showToolbarBtn.onclick = function() {
-      toolbarPanel.style.display = 'block';
-    };
-    closeBtn.onclick = function() {
-      toolbarPanel.style.display = 'none';
-    };
+    if (showToolbarBtn && toolbarPanel) {
+      showToolbarBtn.onclick = function() {
+        toolbarPanel.style.display = 'block';
+      };
+    }
+    if (closeBtn && toolbarPanel) {
+      closeBtn.onclick = function() {
+        toolbarPanel.style.display = 'none';
+      };
+    }
     // Toolbar controls (hooks for brush logic)
     const eraseToolbarBtn = document.getElementById('toolbar-erase');
     const restoreToolbarBtn = document.getElementById('toolbar-restore');
@@ -1284,73 +1288,76 @@
     const brushValue = document.getElementById('toolbar-brush-value');
     const resetBtn = document.getElementById('toolbar-reset');
     // Toggle active mode
-    eraseToolbarBtn.onclick = function() {
-      eraseToolbarBtn.classList.add('active');
-      restoreToolbarBtn.classList.remove('active');
-      // TODO: Set brush to erase mode (black)
-    };
-    restoreToolbarBtn.onclick = function() {
-      restoreToolbarBtn.classList.add('active');
-      eraseToolbarBtn.classList.remove('active');
-      // TODO: Set brush to restore mode (white)
-    };
-    brushSizeInput.oninput = function(e) {
-      brushValue.textContent = e.target.value;
-      // TODO: Set brush size
-    };
-    resetBtn.onclick = function() {
-      // TODO: Reset mask logic
-    };
+    if (eraseToolbarBtn && restoreToolbarBtn) {
+      eraseToolbarBtn.onclick = function() {
+        eraseToolbarBtn.classList.add('active');
+        restoreToolbarBtn.classList.remove('active');
+        // TODO: Set brush to erase mode (black)
+      };
+      restoreToolbarBtn.onclick = function() {
+        restoreToolbarBtn.classList.add('active');
+        eraseToolbarBtn.classList.remove('active');
+        // TODO: Set brush to restore mode (white)
+      };
+    }
+    if (brushSizeInput && brushValue) {
+      brushSizeInput.oninput = function(e) {
+        brushValue.textContent = e.target.value;
+        // TODO: Set brush size
+      };
+    }
+    if (resetBtn) {
+      resetBtn.onclick = function() {
+        // TODO: Reset mask logic
+      };
+    }
 
     // Hugging Face Space API Integration
     async function callHuggingFaceAPI(selectedFile) {
       try {
         // Show loading state
         const removeBtn = document.querySelector('.remove-btn');
-        const originalText = removeBtn.textContent;
-        removeBtn.textContent = 'Processing...';
-        removeBtn.disabled = true;
-
+        const originalText = removeBtn ? removeBtn.textContent : '';
+        if (removeBtn) {
+          removeBtn.textContent = 'Processing...';
+          removeBtn.disabled = true;
+        }
         const formData = new FormData();
         formData.append("file", selectedFile);
-
         const response = await fetch("https://ravikumar619-bgclean1.hf.space/remove-background", {
           method: "POST",
           body: formData,
         });
-
         if (!response.ok) {
           throw new Error(`Failed: ${response.status} - ${response.statusText}`);
         }
-
+        // Handle as blob (not JSON)
         const blob = await response.blob();
         const imageUrl = URL.createObjectURL(blob);
-        
         // Display the result
         const outputImg = document.getElementById('output-img');
         if (outputImg) {
           outputImg.src = imageUrl;
           outputImg.style.display = 'block';
         }
-
         // Update download link
         const downloadBtn = document.querySelector('a[download]');
         if (downloadBtn) {
           downloadBtn.href = imageUrl;
           downloadBtn.download = 'bg-removed.png';
         }
-
         // Show success message
         console.log('Background removed successfully!');
-        
       } catch (error) {
         console.error('Error:', error);
         alert('Error processing image: ' + error.message);
       } finally {
         // Reset button state
         const removeBtn = document.querySelector('.remove-btn');
-        removeBtn.textContent = originalText;
-        removeBtn.disabled = false;
+        if (removeBtn) {
+          removeBtn.textContent = 'Remove Background';
+          removeBtn.disabled = false;
+        }
       }
     }
 
