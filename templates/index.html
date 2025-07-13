@@ -1301,6 +1301,95 @@
     resetBtn.onclick = function() {
       // TODO: Reset mask logic
     };
+
+    // Hugging Face Space API Integration
+    async function callHuggingFaceAPI(selectedFile) {
+      try {
+        // Show loading state
+        const removeBtn = document.querySelector('.remove-btn');
+        const originalText = removeBtn.textContent;
+        removeBtn.textContent = 'Processing...';
+        removeBtn.disabled = true;
+
+        const formData = new FormData();
+        formData.append("file", selectedFile);
+
+        const response = await fetch("https://ravikumar619-bgclean1.hf.space/remove-background", {
+          method: "POST",
+          body: formData,
+        });
+
+        if (!response.ok) {
+          throw new Error(`Failed: ${response.status} - ${response.statusText}`);
+        }
+
+        const blob = await response.blob();
+        const imageUrl = URL.createObjectURL(blob);
+        
+        // Display the result
+        const outputImg = document.getElementById('output-img');
+        if (outputImg) {
+          outputImg.src = imageUrl;
+          outputImg.style.display = 'block';
+        }
+
+        // Update download link
+        const downloadBtn = document.querySelector('a[download]');
+        if (downloadBtn) {
+          downloadBtn.href = imageUrl;
+          downloadBtn.download = 'bg-removed.png';
+        }
+
+        // Show success message
+        console.log('Background removed successfully!');
+        
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Error processing image: ' + error.message);
+      } finally {
+        // Reset button state
+        const removeBtn = document.querySelector('.remove-btn');
+        removeBtn.textContent = originalText;
+        removeBtn.disabled = false;
+      }
+    }
+
+    // Update existing file upload handler to use Hugging Face API
+    const fileInput = document.querySelector('input[type="file"]');
+    if (fileInput) {
+      fileInput.addEventListener('change', function(e) {
+        const selectedFile = e.target.files[0];
+        if (selectedFile) {
+          // Show preview
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            const previewImg = document.getElementById('preview-img');
+            if (previewImg) {
+              previewImg.src = e.target.result;
+              previewImg.style.display = 'block';
+            }
+          };
+          reader.readAsDataURL(selectedFile);
+        }
+      });
+    }
+
+    // Update remove background button to use Hugging Face API
+    const removeBackgroundBtn = document.querySelector('.remove-btn');
+    if (removeBackgroundBtn) {
+      removeBackgroundBtn.addEventListener('click', function() {
+        const fileInput = document.querySelector('input[type="file"]');
+        const selectedFile = fileInput.files[0];
+        
+        if (!selectedFile) {
+          alert('Please select an image first!');
+          return;
+        }
+
+        // Call Hugging Face API
+        callHuggingFaceAPI(selectedFile);
+      });
+    }
   </script>
 </body>
 </html> 
