@@ -1,11 +1,15 @@
+import os
+os.environ["NUMBA_CACHE_DIR"] = "/tmp/numba_cache"
 from flask import Flask, render_template, request, jsonify
 import io
 import base64
 from rembg import remove
 from PIL import Image
 import os
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
