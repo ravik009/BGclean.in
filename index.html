@@ -469,7 +469,9 @@
 
         const formData = new FormData(uploadForm);
         const res = await fetch('/', { method: 'POST', body: formData });
-        const data = await res.blob();
+        const blob = await response.blob(); // ✅ सही
+        const imageUrl = URL.createObjectURL(blob);
+        // <img src=imageUrl> में दिखाएँ
 
         // Complete progress bar
         clearInterval(progressInterval);
