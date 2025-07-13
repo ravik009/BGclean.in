@@ -1,20 +1,71 @@
-# general things to ignore
-build/
-dist/
-.venv/
-.direnv/
-*.egg-info/
-*.egg
-*.py[cod]
+# Python
 __pycache__/
+*.py[cod]
+*$py.class
 *.so
-*~≈
-.env
-.envrc
-.idea
-.pytest_cache
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
 
-# due to using tox and pytest
-.tox
+# Virtual environments
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+
+# Model files (will be downloaded automatically)
+*.onnx
+
+# Flask
+instance/
+.webassets-cache
+
+# Coverage reports
+htmlcov/
+.tox/
+.coverage
+.coverage.*
 .cache
-.mypy_cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/

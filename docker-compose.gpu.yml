@@ -1,14 +1,10 @@
----
-# You can set variables in .env file in root folder
-#
-# PUBLIC_PORT=7000:7000
-# REPLICAS_COUNT=1
-
 version: '3.8'
 
 services:
-  bgclean:
-    build: .
+  bgclean-gpu:
+    build:
+      context: .
+      dockerfile: Dockerfile.gpu
     ports:
       - "7860:7860"
     environment:
@@ -18,6 +14,13 @@ services:
       - ./uploads:/app/uploads
       - model_cache:/root/.u2net
     restart: unless-stopped
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:7860/"]
       interval: 30s
@@ -26,4 +29,4 @@ services:
       start_period: 40s
 
 volumes:
-  model_cache:
+  model_cache: 
