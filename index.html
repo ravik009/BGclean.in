@@ -2,84 +2,21 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>BG Clean – Background Remover</title>
-  <style>
-    body {
-      font-family: sans-serif;
-      padding: 30px;
-      text-align: center;
-    }
-    img {
-      margin-top: 20px;
-      max-width: 300px;
-      display: none;
-      border: 1px solid #ccc;
-    }
-    .btn {
-      margin-top: 10px;
-      padding: 10px 20px;
-      font-size: 16px;
-    }
-  </style>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-
-  <h2>Remove Background from Image</h2>
-
-  <form id="upload-form" method="POST" enctype="multipart/form-data">
-    <input type="file" name="image" id="image-input" accept="image/*" required />
-    <br/>
-    <button class="btn" type="submit">Remove Background</button>
-  </form>
-
-  <div id="status"></div>
-
-  <img id="output-img" />
-
-  <script>
-    const form = document.getElementById('upload-form');
-    const status = document.getElementById('status');
-    const outputImg = document.getElementById('output-img');
-
-    form.addEventListener('submit', async function (e) {
-      e.preventDefault();
-
-      const fileInput = document.getElementById('image-input');
-      const file = fileInput.files[0];
-      if (!file) {
-        alert("Please select an image first!");
-        return;
-      }
-
-      const formData = new FormData();
-      formData.append("image", file);
-
-      status.innerText = "Removing background...";
-      outputImg.style.display = "none";
-
-      try {
-        const response = await fetch("/", {
-          method: "POST",
-          body: formData
-        });
-
-        const data = await response.json();
-
-        if (data.success) {
-          outputImg.src = "data:image/png;base64," + data.output_image;
-          outputImg.style.display = "block";
-          status.innerText = "Done!";
-        } else {
-          status.innerText = "Error: " + data.error;
-        }
-
-      } catch (error) {
-        console.error(error);
-        status.innerText = "Something went wrong!";
-      }
-    });
-  </script>
-
+  <div class="container">
+    <h2>Remove Background from Image</h2>
+    <input type="file" id="file-input" accept="image/*" />
+    <button class="remove-btn">Remove Background</button>
+    <div id="preview">
+      <img id="preview-img" style="display:none;" />
+      <img id="output-img" style="display:none;" />
+    </div>
+    <a href="#" download id="download-link" style="display:none;">Download Result</a>
+    <p id="status"></p>
+  </div>
+  <script src="preview.js"></script>
 </body>
 </html>
